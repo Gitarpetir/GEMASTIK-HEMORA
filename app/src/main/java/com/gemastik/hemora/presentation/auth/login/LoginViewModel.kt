@@ -24,7 +24,7 @@ class LoginViewModel(
             _uiState.value = LoginUiState.Loading
             loginUseCase(email, password).collect { result ->
                 result.onSuccess { user ->
-                    _uiState.value = LoginUiState.Success(user.name)
+                    _uiState.value = LoginUiState.Success(user.role)
                 }.onFailure { error ->
                     _uiState.value = LoginUiState.Error(error.message ?: "Terjadi kesalahan")
                 }
@@ -36,6 +36,6 @@ class LoginViewModel(
 sealed class LoginUiState {
     object Idle : LoginUiState()
     object Loading : LoginUiState()
-    data class Success(val userName: String) : LoginUiState()
+    data class Success(val role: String) : LoginUiState()
     data class Error(val message: String) : LoginUiState()
 }

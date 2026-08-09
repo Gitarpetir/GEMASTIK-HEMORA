@@ -1,5 +1,6 @@
 package com.gemastik.hemora.data.auth.repository
 
+import com.gemastik.hemora.data.school.dto.SchoolDto
 import com.gemastik.hemora.data.auth.dto.UserDto
 import com.gemastik.hemora.domain.auth.repository.AuthRepository
 import com.gemastik.hemora.domain.model.User
@@ -25,11 +26,7 @@ class AuthRepositoryImpl(
                 if (document.exists()) {
                     val userDto = document.toObject(UserDto::class.java)
                     if (userDto != null) {
-                        if (userDto.role == "REMAJA_PUTRI") {
-                            emit(Result.success(userDto.toDomain(user.uid)))
-                        } else {
-                            emit(Result.failure(Exception("Akses ditolak. Aplikasi ini khusus Remaja Putri.")))
-                        }
+                        emit(Result.success(userDto.toDomain(user.uid)))
                     } else {
                         emit(Result.failure(Exception("Data pengguna tidak valid.")))
                     }
@@ -74,6 +71,58 @@ class AuthRepositoryImpl(
                     email = email,
                     role = "REMAJA_PUTRI",
                     schoolId = schoolId
+                )
+                firestore.collection("users").document(firebaseUser.uid).set(userDto).await()
+                
+                emit(Result.success(userDto.toDomain(firebaseUser.uid)))
+            } else {
+                emit(Result.failure(Exception("Gagal membuat akun.")))
+            }
+        } catch (e: Exception) {
+            emit(Result.failure(e))
+        }
+    }
+
+    override fun registerUks(
+        name: String,
+        email: String,
+        password: String,
+        schoolName: String,
+        activationCode: String
+    ): Flow<Result<User>> = flow {
+        try {
+            // 1. Validate Activation Code
+            val activationDoc = firestore.collection("activation_codes").document("UKS").get().await()
+            if (!activationDoc.exists()) {
+                emit(Result.failure(Exception("Sistem belum siap untuk pendaftaran UKS.")))
+                return@flow
+            }
+            val validCode = activationDoc.getString("code")
+            if (validCode != activationCode) {
+                emit(Result.failure(Exception("Kode Aktivasi UKS tidak valid.")))
+                return@flow
+            }
+
+            // 2. Create Firebase Auth User
+            val authResult = auth.createUserWithEmailAndPassword(email, password).await()
+            val firebaseUser = authResult.user
+            
+            if (firebaseUser != null) {
+                // 3. Generate Random School Code
+                val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                val generatedSchoolCode = (1..6).map { chars.random() }.joinToString("")
+                
+                // 4. Create School Document
+                val schoolDto = SchoolDto(schoolName = schoolName, schoolCode = generatedSchoolCode)
+                val schoolRef = firestore.collection("schools").document()
+                schoolRef.set(schoolDto).await()
+                
+                // 5. Create User Document
+                val userDto = UserDto(
+                    name = name,
+                    email = email,
+                    role = "UKS",
+                    schoolId = schoolRef.id
                 )
                 firestore.collection("users").document(firebaseUser.uid).set(userDto).await()
                 

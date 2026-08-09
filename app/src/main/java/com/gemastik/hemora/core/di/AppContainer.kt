@@ -4,6 +4,7 @@ import com.gemastik.hemora.data.auth.repository.AuthRepositoryImpl
 import com.gemastik.hemora.domain.auth.repository.AuthRepository
 import com.gemastik.hemora.domain.auth.usecase.LoginUseCase
 import com.gemastik.hemora.domain.auth.usecase.RegisterRemajaPutriUseCase
+import com.gemastik.hemora.domain.auth.usecase.RegisterUksUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -11,6 +12,7 @@ interface AppContainer {
     val authRepository: AuthRepository
     val loginUseCase: LoginUseCase
     val registerRemajaPutriUseCase: RegisterRemajaPutriUseCase
+    val registerUksUseCase: RegisterUksUseCase
 }
 
 class DefaultAppContainer : AppContainer {
@@ -27,5 +29,9 @@ class DefaultAppContainer : AppContainer {
 
     override val registerRemajaPutriUseCase: RegisterRemajaPutriUseCase by lazy {
         RegisterRemajaPutriUseCase(authRepository)
+    }
+
+    override val registerUksUseCase: RegisterUksUseCase by lazy {
+        RegisterUksUseCase(authRepository)
     }
 }

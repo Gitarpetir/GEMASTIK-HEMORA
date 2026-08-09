@@ -15,15 +15,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    onNavigateToRegister: () -> Unit,
-    onLoginSuccess: () -> Unit
+    onNavigateToRegisterRemajaPutri: () -> Unit,
+    onNavigateToRegisterUks: () -> Unit,
+    onLoginSuccess: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LoginContent(
         uiState = uiState,
         onLoginClick = { email, password -> viewModel.login(email, password) },
-        onNavigateToRegister = onNavigateToRegister,
+        onNavigateToRegisterRemajaPutri = onNavigateToRegisterRemajaPutri,
+        onNavigateToRegisterUks = onNavigateToRegisterUks,
         onLoginSuccess = onLoginSuccess
     )
 }
@@ -32,15 +34,16 @@ fun LoginScreen(
 fun LoginContent(
     uiState: LoginUiState,
     onLoginClick: (String, String) -> Unit,
-    onNavigateToRegister: () -> Unit,
-    onLoginSuccess: () -> Unit
+    onNavigateToRegisterRemajaPutri: () -> Unit,
+    onNavigateToRegisterUks: () -> Unit,
+    onLoginSuccess: (String) -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     LaunchedEffect(uiState) {
         if (uiState is LoginUiState.Success) {
-            onLoginSuccess()
+            onLoginSuccess(uiState.role)
         }
     }
 
@@ -108,8 +111,12 @@ fun LoginContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = onNavigateToRegister) {
-            Text("Belum punya akun? Daftar sebagai Remaja Putri")
+        TextButton(onClick = onNavigateToRegisterRemajaPutri) {
+            Text("Daftar sebagai Remaja Putri")
+        }
+        
+        TextButton(onClick = onNavigateToRegisterUks) {
+            Text("Daftar sebagai UKS")
         }
     }
 }
@@ -121,7 +128,8 @@ fun LoginScreenPreview() {
         LoginContent(
             uiState = LoginUiState.Idle,
             onLoginClick = { _, _ -> },
-            onNavigateToRegister = {},
+            onNavigateToRegisterRemajaPutri = {},
+            onNavigateToRegisterUks = {},
             onLoginSuccess = {}
         )
     }
