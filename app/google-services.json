@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "120769428919",
+    "project_id": "hemora-78ee5",
+    "storage_bucket": "hemora-78ee5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120769428919:android:2944409476e53836f93c32",
+        "android_client_info": {
+          "package_name": "com.gemastik.hemora"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOe7YRWeyIasw9AyjIs2Wkhhgvleu2cZs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
