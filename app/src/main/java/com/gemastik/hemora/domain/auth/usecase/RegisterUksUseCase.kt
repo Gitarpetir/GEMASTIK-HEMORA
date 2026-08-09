@@ -1,0 +1,11 @@
+package com.gemastik.hemora.domain.auth.usecase
+
+import com.gemastik.hemora.domain.auth.repository.AuthRepository
+import com.gemastik.hemora.domain.model.User
+import kotlinx.coroutines.flow.Flow
+
+class RegisterUksUseCase(private val repository: AuthRepository) {
+    operator fun invoke(name: String, email: String, password: String, schoolName: String, activationCode: String): Flow<Result<User>> {
+        return repository.registerUks(name, email, password, schoolName, activationCode)
+    }
+}
