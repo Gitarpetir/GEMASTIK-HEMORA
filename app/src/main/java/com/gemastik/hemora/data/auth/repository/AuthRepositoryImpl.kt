@@ -108,9 +108,21 @@ class AuthRepositoryImpl(
             val firebaseUser = authResult.user
             
             if (firebaseUser != null) {
-                // 3. Generate Random School Code
+                // 3. Generate Random School Code with uniqueness check
                 val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                val generatedSchoolCode = (1..6).map { chars.random() }.joinToString("")
+                var generatedSchoolCode = ""
+                var isUnique = false
+                
+                while (!isUnique) {
+                    generatedSchoolCode = (1..6).map { chars.random() }.joinToString("")
+                    val existingSchool = firestore.collection("schools")
+                        .whereEqualTo("schoolCode", generatedSchoolCode)
+                        .get()
+                        .await()
+                    if (existingSchool.isEmpty) {
+                        isUnique = true
+                    }
+                }
                 
                 // 4. Create School Document
                 val schoolDto = SchoolDto(schoolName = schoolName, schoolCode = generatedSchoolCode)
