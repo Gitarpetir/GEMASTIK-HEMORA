@@ -16,7 +16,7 @@ class ConsumptionRepositoryImpl(
 ) : ConsumptionRepository {
 
     override fun getConsumptionHistory(userId: String): Flow<Result<List<TtdConsumption>>> = callbackFlow {
-        val listener = firestore.collection("ttd_consumption")
+        val listener = firestore.collection("ttdConsumptions")
             .whereEqualTo("userId", userId)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -40,7 +40,7 @@ class ConsumptionRepositoryImpl(
         userId: String,
         scheduleId: String
     ): Flow<Result<TtdConsumption?>> = callbackFlow {
-        val listener = firestore.collection("ttd_consumption")
+        val listener = firestore.collection("ttdConsumptions")
             .whereEqualTo("userId", userId)
             .whereEqualTo("scheduleId", scheduleId)
             .addSnapshotListener { snapshot, error ->
@@ -67,7 +67,7 @@ class ConsumptionRepositoryImpl(
         status: ConsumptionStatus
     ): Result<Unit> {
         return try {
-            val snapshot = firestore.collection("ttd_consumption")
+            val snapshot = firestore.collection("ttdConsumptions")
                 .whereEqualTo("userId", userId)
                 .whereEqualTo("scheduleId", scheduleId)
                 .get()
@@ -75,7 +75,7 @@ class ConsumptionRepositoryImpl(
                 
             if (!snapshot.isEmpty) {
                 val docId = snapshot.documents.first().id
-                firestore.collection("ttd_consumption").document(docId)
+                firestore.collection("ttdConsumptions").document(docId)
                     .update(
                         mapOf(
                             "status" to status.name,
@@ -83,7 +83,7 @@ class ConsumptionRepositoryImpl(
                         )
                     ).await()
             } else {
-                val docRef = firestore.collection("ttd_consumption").document()
+                val docRef = firestore.collection("ttdConsumptions").document()
                 val dto = TtdConsumptionDto(
                     consumptionId = docRef.id,
                     userId = userId,
@@ -100,7 +100,7 @@ class ConsumptionRepositoryImpl(
     }
 
     override fun getComplianceStatistics(userId: String): Flow<Result<ComplianceStatistics>> = callbackFlow {
-        val listener = firestore.collection("ttd_consumption")
+        val listener = firestore.collection("ttdConsumptions")
             .whereEqualTo("userId", userId)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
