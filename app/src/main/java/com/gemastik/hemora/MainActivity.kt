@@ -104,6 +104,18 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onNavigateToSchedule = {
                                     navController.navigate("schedules")
+                                },
+                                onNavigateToSchoolCode = {
+                                    navController.navigate("school_code")
+                                }
+                            )
+                        }
+                        composable("school_code") {
+                            val viewModel: com.gemastik.hemora.presentation.school.SchoolViewModel = viewModel(factory = ViewModelFactory.Factory)
+                            com.gemastik.hemora.presentation.school.SchoolScreen(
+                                viewModel = viewModel,
+                                onNavigateBack = {
+                                    navController.popBackStack()
                                 }
                             )
                         }

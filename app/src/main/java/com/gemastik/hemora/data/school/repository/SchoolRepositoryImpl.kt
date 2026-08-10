@@ -29,4 +29,19 @@ class SchoolRepositoryImpl(
             emit(Result.failure(e))
         }
     }
+
+    override fun regenerateSchoolCode(schoolId: String): Flow<Result<String>> = flow {
+        try {
+            val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            val newCode = (1..6).map { chars.random() }.joinToString("")
+            
+            firestore.collection("schools").document(schoolId)
+                .update("schoolCode", newCode)
+                .await()
+                
+            emit(Result.success(newCode))
+        } catch (e: Exception) {
+            emit(Result.failure(e))
+        }
+    }
 }

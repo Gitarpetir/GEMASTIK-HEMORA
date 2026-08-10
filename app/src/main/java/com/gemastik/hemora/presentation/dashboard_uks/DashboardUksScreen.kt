@@ -15,20 +15,23 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun DashboardUksScreen(
     viewModel: DashboardUksViewModel,
-    onNavigateToSchedule: () -> Unit
+    onNavigateToSchedule: () -> Unit,
+    onNavigateToSchoolCode: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     DashboardUksContent(
         uiState = uiState,
-        onNavigateToSchedule = onNavigateToSchedule
+        onNavigateToSchedule = onNavigateToSchedule,
+        onNavigateToSchoolCode = onNavigateToSchoolCode
     )
 }
 
 @Composable
 fun DashboardUksContent(
     uiState: DashboardUksUiState,
-    onNavigateToSchedule: () -> Unit
+    onNavigateToSchedule: () -> Unit,
+    onNavigateToSchoolCode: () -> Unit
 ) {
     val clipboardManager = LocalClipboardManager.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -119,7 +122,19 @@ fun DashboardUksContent(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         
-                        Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        Button(
+                            onClick = onNavigateToSchoolCode,
+                            modifier = Modifier.fillMaxWidth().height(50.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary
+                            )
+                        ) {
+                            Text("Kelola School Code")
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
                         
                         Button(
                             onClick = onNavigateToSchedule,
@@ -143,7 +158,8 @@ fun DashboardUksScreenPreview() {
                 schoolName = "SMA Negeri 1 Jakarta",
                 schoolCode = "XYZ123"
             ),
-            onNavigateToSchedule = {}
+            onNavigateToSchedule = {},
+            onNavigateToSchoolCode = {}
         )
     }
 }

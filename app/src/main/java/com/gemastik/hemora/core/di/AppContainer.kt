@@ -9,13 +9,13 @@ import com.gemastik.hemora.domain.auth.usecase.RegisterRemajaPutriUseCase
 import com.gemastik.hemora.domain.auth.usecase.RegisterUksUseCase
 import com.gemastik.hemora.domain.school.repository.SchoolRepository
 import com.gemastik.hemora.domain.school.usecase.GetSchoolInfoUseCase
+import com.gemastik.hemora.domain.school.usecase.RegenerateSchoolCodeUseCase
 import com.gemastik.hemora.domain.schedule.repository.ScheduleRepository
 import com.gemastik.hemora.domain.schedule.usecase.AddScheduleUseCase
 import com.gemastik.hemora.domain.schedule.usecase.DeleteScheduleUseCase
 import com.gemastik.hemora.domain.schedule.usecase.GetSchedulesUseCase
 import com.gemastik.hemora.domain.schedule.usecase.ManageScheduleUseCases
 import com.gemastik.hemora.domain.schedule.usecase.UpdateScheduleUseCase
-import com.gemastik.hemora.data.schedule.repository.ScheduleRepositoryImpl
 import com.gemastik.hemora.data.consumption.repository.ConsumptionRepositoryImpl
 import com.gemastik.hemora.domain.consumption.repository.ConsumptionRepository
 import com.gemastik.hemora.domain.consumption.usecase.GetActiveReminderUseCase
@@ -39,6 +39,7 @@ interface AppContainer {
     val confirmTtdConsumptionUseCase: ConfirmTtdConsumptionUseCase
     val getConsumptionHistoryUseCase: GetConsumptionHistoryUseCase
     val getUserStatisticsUseCase: GetUserStatisticsUseCase
+    val regenerateSchoolCodeUseCase: RegenerateSchoolCodeUseCase
 }
 
 class DefaultAppContainer : AppContainer {
@@ -100,5 +101,9 @@ class DefaultAppContainer : AppContainer {
 
     override val getUserStatisticsUseCase: GetUserStatisticsUseCase by lazy {
         GetUserStatisticsUseCase(consumptionRepository)
+    }
+
+    override val regenerateSchoolCodeUseCase: RegenerateSchoolCodeUseCase by lazy {
+        com.gemastik.hemora.domain.school.usecase.RegenerateSchoolCodeUseCase(schoolRepository)
     }
 }
