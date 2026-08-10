@@ -107,6 +107,18 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onNavigateToSchoolCode = {
                                     navController.navigate("school_code")
+                                },
+                                onNavigateToStudents = {
+                                    navController.navigate("daftar_siswi")
+                                }
+                            )
+                        }
+                        composable("daftar_siswi") {
+                            val viewModel: com.gemastik.hemora.presentation.monitoring.DaftarSiswiViewModel = viewModel(factory = ViewModelFactory.Factory)
+                            com.gemastik.hemora.presentation.monitoring.DaftarSiswiScreen(
+                                viewModel = viewModel,
+                                onNavigateBack = {
+                                    navController.popBackStack()
                                 }
                             )
                         }

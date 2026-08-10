@@ -16,14 +16,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun DashboardUksScreen(
     viewModel: DashboardUksViewModel,
     onNavigateToSchedule: () -> Unit,
-    onNavigateToSchoolCode: () -> Unit
+    onNavigateToSchoolCode: () -> Unit,
+    onNavigateToStudents: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     DashboardUksContent(
         uiState = uiState,
         onNavigateToSchedule = onNavigateToSchedule,
-        onNavigateToSchoolCode = onNavigateToSchoolCode
+        onNavigateToSchoolCode = onNavigateToSchoolCode,
+        onNavigateToStudents = onNavigateToStudents
     )
 }
 
@@ -31,7 +33,8 @@ fun DashboardUksScreen(
 fun DashboardUksContent(
     uiState: DashboardUksUiState,
     onNavigateToSchedule: () -> Unit,
-    onNavigateToSchoolCode: () -> Unit
+    onNavigateToSchoolCode: () -> Unit,
+    onNavigateToStudents: () -> Unit
 ) {
     val clipboardManager = LocalClipboardManager.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -142,6 +145,18 @@ fun DashboardUksContent(
                         ) {
                             Text("Kelola Jadwal TTD")
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        Button(
+                            onClick = onNavigateToStudents,
+                            modifier = Modifier.fillMaxWidth().height(50.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary
+                            )
+                        ) {
+                            Text("Lihat Daftar Siswi")
+                        }
                     }
                 }
             }
@@ -159,7 +174,8 @@ fun DashboardUksScreenPreview() {
                 schoolCode = "XYZ123"
             ),
             onNavigateToSchedule = {},
-            onNavigateToSchoolCode = {}
+            onNavigateToSchoolCode = {},
+            onNavigateToStudents = {}
         )
     }
 }

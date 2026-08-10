@@ -69,5 +69,12 @@ object ViewModelFactory {
                 application.container.regenerateSchoolCodeUseCase
             )
         }
+        initializer {
+            val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as HemoraApplication)
+            com.gemastik.hemora.presentation.monitoring.DaftarSiswiViewModel(
+                application.container.authRepository,
+                application.container.getStudentsUseCase
+            )
+        }
     }
 }
