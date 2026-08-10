@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -21,7 +22,7 @@ import com.gemastik.hemora.presentation.consumption.tracker.TrackerScreen
 @Composable
 fun HomeRemajaPutriScreen() {
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
-    val items = listOf("Beranda", "Riwayat")
+    val items = listOf("Beranda", "Riwayat", "Statistik")
 
     Scaffold(
         bottomBar = {
@@ -29,8 +30,11 @@ fun HomeRemajaPutriScreen() {
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
                         icon = {
-                            if (index == 0) Icon(Icons.Filled.Home, contentDescription = item)
-                            else Icon(Icons.Filled.List, contentDescription = item)
+                            when (index) {
+                                0 -> Icon(Icons.Filled.Home, contentDescription = item)
+                                1 -> Icon(Icons.Filled.List, contentDescription = item)
+                                else -> Icon(Icons.Filled.Info, contentDescription = item)
+                            }
                         },
                         label = { Text(item) },
                         selected = selectedItem == index,
@@ -44,6 +48,7 @@ fun HomeRemajaPutriScreen() {
             when (selectedItem) {
                 0 -> TrackerScreen()
                 1 -> HistoryScreen()
+                2 -> com.gemastik.hemora.presentation.consumption.statistics.StatisticsScreen()
             }
         }
     }

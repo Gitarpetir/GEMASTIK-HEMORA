@@ -98,39 +98,4 @@ class ConsumptionRepositoryImpl(
             Result.failure(e)
         }
     }
-
-    override fun getComplianceStatistics(userId: String): Flow<Result<ComplianceStatistics>> = callbackFlow {
-        val listener = firestore.collection("ttdConsumptions")
-            .whereEqualTo("userId", userId)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    trySend(Result.failure(error))
-                    return@addSnapshotListener
-                }
-
-                if (snapshot != null) {
-                    val consumptions = snapshot.documents.mapNotNull { doc ->
-                        doc.toObject(TtdConsumptionDto::class.java)?.toDomain()
-                    }
-                    val total = consumptions.size
-                    val consumed = consumptions.count { it.status == ConsumptionStatus.SUDAH_KONSUMSI }
-                    val missed = consumptions.count { it.status == ConsumptionStatus.TERLEWAT }
-                    
-                    val percentage = if (total > 0) {
-                        (consumed.toFloat() / total.toFloat()) * 100f
-                    } else 0f
-                    
-                    val stats = ComplianceStatistics(
-                        totalSchedules = total,
-                        totalConsumed = consumed,
-                        totalMissed = missed,
-                        compliancePercentage = percentage
-                    )
-                    
-                    trySend(Result.success(stats))
-                }
-            }
-            
-        awaitClose { listener.remove() }
-    }
 }
