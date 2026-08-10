@@ -19,7 +19,14 @@ import com.gemastik.hemora.presentation.auth.register.RegisterScreen
 import com.gemastik.hemora.presentation.auth.register.RegisterViewModel
 import com.gemastik.hemora.presentation.auth.register_uks.RegisterUksScreen
 import com.gemastik.hemora.presentation.auth.register_uks.RegisterUksViewModel
+import com.gemastik.hemora.presentation.dashboard_uks.DashboardUksScreen
+import com.gemastik.hemora.presentation.dashboard_uks.DashboardUksViewModel
+import com.gemastik.hemora.presentation.schedule.AddEditScheduleScreen
+import com.gemastik.hemora.presentation.schedule.ScheduleScreen
+import com.gemastik.hemora.presentation.schedule.ScheduleViewModel
 import com.gemastik.hemora.ui.theme.HemoraTheme
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +99,49 @@ class MainActivity : ComponentActivity() {
                             Text("Welcome to Home Remaja Putri")
                         }
                         composable("dashboard_uks") {
-                            Text("Welcome to Dashboard UKS")
+                            val viewModel: DashboardUksViewModel = viewModel(factory = ViewModelFactory.Factory)
+                            DashboardUksScreen(
+                                viewModel = viewModel,
+                                onNavigateToSchedule = {
+                                    navController.navigate("schedules")
+                                }
+                            )
+                        }
+                        composable("schedules") {
+                            val viewModel: ScheduleViewModel = viewModel(factory = ViewModelFactory.Factory)
+                            ScheduleScreen(
+                                viewModel = viewModel,
+                                onNavigateToAddEdit = { scheduleId, date, time ->
+                                    if (scheduleId == null) {
+                                        navController.navigate("add_edit_schedule")
+                                    } else {
+                                        navController.navigate("add_edit_schedule?scheduleId=$scheduleId&date=$date&time=$time")
+                                    }
+                                }
+                            )
+                        }
+                        composable(
+                            route = "add_edit_schedule?scheduleId={scheduleId}&date={date}&time={time}",
+                            arguments = listOf(
+                                navArgument("scheduleId") { type = NavType.StringType; nullable = true; defaultValue = null },
+                                navArgument("date") { type = NavType.StringType; nullable = true; defaultValue = null },
+                                navArgument("time") { type = NavType.StringType; nullable = true; defaultValue = null }
+                            )
+                        ) { backStackEntry ->
+                            val viewModel: ScheduleViewModel = viewModel(factory = ViewModelFactory.Factory)
+                            val scheduleId = backStackEntry.arguments?.getString("scheduleId")
+                            val date = backStackEntry.arguments?.getString("date")
+                            val time = backStackEntry.arguments?.getString("time")
+                            
+                            AddEditScheduleScreen(
+                                viewModel = viewModel,
+                                scheduleId = scheduleId,
+                                initialDate = date,
+                                initialTime = time,
+                                onNavigateBack = {
+                                    navController.popBackStack()
+                                }
+                            )
                         }
                     }
                 }

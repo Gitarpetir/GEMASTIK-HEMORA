@@ -8,14 +8,25 @@ data class TtdScheduleDto(
     val scheduleId: String = "",
     val schoolId: String = "",
     val date: Timestamp? = null,
-    val time: String = ""
+    val time: String = "",
+    val createdAt: Long = 0L
 ) {
-    fun toDomain(): TtdSchedule {
+    fun toDomain(docId: String = scheduleId): TtdSchedule {
         return TtdSchedule(
-            scheduleId = scheduleId,
+            scheduleId = if (docId.isNotEmpty()) docId else scheduleId,
             schoolId = schoolId,
             date = date?.toDate() ?: Date(),
             time = time
         )
     }
+}
+
+fun TtdSchedule.toDto(): TtdScheduleDto {
+    return TtdScheduleDto(
+        scheduleId = scheduleId,
+        schoolId = schoolId,
+        date = Timestamp(date),
+        time = time,
+        createdAt = System.currentTimeMillis()
+    )
 }
