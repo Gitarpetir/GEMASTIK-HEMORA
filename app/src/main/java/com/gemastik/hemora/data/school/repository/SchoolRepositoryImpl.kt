@@ -33,7 +33,21 @@ class SchoolRepositoryImpl(
     override fun regenerateSchoolCode(schoolId: String): Flow<Result<String>> = flow {
         try {
             val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-            val newCode = (1..6).map { chars.random() }.joinToString("")
+            var newCode = ""
+            var isUnique = false
+            
+            // Periksa keunikan kode baru sebelum menyimpannya
+            while (!isUnique) {
+                newCode = (1..6).map { chars.random() }.joinToString("")
+                val existingDocs = firestore.collection("schools")
+                    .whereEqualTo("schoolCode", newCode)
+                    .get()
+                    .await()
+                
+                if (existingDocs.isEmpty) {
+                    isUnique = true
+                }
+            }
             
             firestore.collection("schools").document(schoolId)
                 .update("schoolCode", newCode)
