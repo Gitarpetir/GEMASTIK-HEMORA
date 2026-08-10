@@ -104,7 +104,7 @@ class DefaultAppContainer : AppContainer {
     }
 
     override val getUserStatisticsUseCase: GetUserStatisticsUseCase by lazy {
-        GetUserStatisticsUseCase(consumptionRepository)
+        GetUserStatisticsUseCase(scheduleRepository, consumptionRepository)
     }
 
     override val regenerateSchoolCodeUseCase: RegenerateSchoolCodeUseCase by lazy {
