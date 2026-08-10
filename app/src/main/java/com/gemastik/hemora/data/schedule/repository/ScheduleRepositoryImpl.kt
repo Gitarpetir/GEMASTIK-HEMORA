@@ -17,7 +17,7 @@ class ScheduleRepositoryImpl(
     private val firestore: FirebaseFirestore
 ) : ScheduleRepository {
 
-    private val schedulesCollection = firestore.collection("ttdSchedules")
+    private val schedulesCollection = firestore.collection("ttd_schedule")
 
     override fun getSchedules(schoolId: String): Flow<Result<List<TtdSchedule>>> = flow {
         try {
