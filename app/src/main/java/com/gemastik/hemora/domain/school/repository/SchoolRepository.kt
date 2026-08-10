@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface SchoolRepository {
     fun getSchoolById(schoolId: String): Flow<Result<School>>
+    fun regenerateSchoolCode(schoolId: String): Flow<Result<String>>
 }
