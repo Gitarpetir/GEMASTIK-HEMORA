@@ -29,7 +29,8 @@ object ViewModelFactory {
             val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as HemoraApplication)
             com.gemastik.hemora.presentation.dashboard_uks.DashboardUksViewModel(
                 application.container.authRepository,
-                application.container.getSchoolInfoUseCase
+                application.container.getSchoolInfoUseCase,
+                application.container.getSchoolSummaryUseCase
             )
         }
         initializer {

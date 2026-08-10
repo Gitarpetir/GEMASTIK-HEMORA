@@ -43,6 +43,7 @@ interface AppContainer {
     val monitoringRepository: com.gemastik.hemora.domain.monitoring.repository.MonitoringRepository
     val getStudentsUseCase: com.gemastik.hemora.domain.monitoring.usecase.GetStudentsUseCase
     val getStudentMonitoringUseCase: com.gemastik.hemora.domain.monitoring.usecase.GetStudentMonitoringUseCase
+    val getSchoolSummaryUseCase: com.gemastik.hemora.domain.dashboard.usecase.GetSchoolSummaryUseCase
 }
 
 class DefaultAppContainer : AppContainer {
@@ -120,5 +121,9 @@ class DefaultAppContainer : AppContainer {
 
     override val getStudentMonitoringUseCase: com.gemastik.hemora.domain.monitoring.usecase.GetStudentMonitoringUseCase by lazy {
         com.gemastik.hemora.domain.monitoring.usecase.GetStudentMonitoringUseCase(scheduleRepository, consumptionRepository)
+    }
+
+    override val getSchoolSummaryUseCase: com.gemastik.hemora.domain.dashboard.usecase.GetSchoolSummaryUseCase by lazy {
+        com.gemastik.hemora.domain.dashboard.usecase.GetSchoolSummaryUseCase(monitoringRepository, scheduleRepository, consumptionRepository)
     }
 }

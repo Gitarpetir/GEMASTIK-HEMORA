@@ -10,6 +10,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
@@ -83,6 +84,41 @@ fun DashboardUksContent(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
+
+                        uiState.summary?.let { summary ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                DashboardMetricCard(
+                                    modifier = Modifier.weight(1f),
+                                    title = "Total Siswi",
+                                    value = summary.totalStudents.toString()
+                                )
+                                DashboardMetricCard(
+                                    modifier = Modifier.weight(1f),
+                                    title = "Jadwal TTD",
+                                    value = summary.totalSchedules.toString()
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                DashboardMetricCard(
+                                    modifier = Modifier.weight(1f),
+                                    title = "Sdh Konsumsi",
+                                    value = summary.totalConfirmed.toString(),
+                                    valueColor = Color(0xFF4CAF50)
+                                )
+                                DashboardMetricCard(
+                                    modifier = Modifier.weight(1f),
+                                    title = "Blm Konsumsi",
+                                    value = summary.totalUnconfirmed.toString(),
+                                    valueColor = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
 
                         Card(
                             modifier = Modifier.fillMaxWidth(),
@@ -177,5 +213,39 @@ fun DashboardUksScreenPreview() {
             onNavigateToSchoolCode = {},
             onNavigateToStudents = {}
         )
+    }
+}
+
+@Composable
+fun DashboardMetricCard(
+    modifier: Modifier = Modifier,
+    title: String,
+    value: String,
+    valueColor: Color = MaterialTheme.colorScheme.onSurface
+) {
+    Card(
+        modifier = modifier.height(100.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = valueColor
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
