@@ -76,5 +76,12 @@ object ViewModelFactory {
                 application.container.getStudentsUseCase
             )
         }
+        initializer {
+            val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as HemoraApplication)
+            com.gemastik.hemora.presentation.monitoring.DetailMonitoringViewModel(
+                application.container.authRepository,
+                application.container.getStudentMonitoringUseCase
+            )
+        }
     }
 }

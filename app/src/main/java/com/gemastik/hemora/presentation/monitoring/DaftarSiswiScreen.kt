@@ -3,6 +3,7 @@ package com.gemastik.hemora.presentation.monitoring
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
@@ -20,7 +21,8 @@ import com.gemastik.hemora.domain.model.User
 @Composable
 fun DaftarSiswiScreen(
     viewModel: DaftarSiswiViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onStudentClick: (User) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -73,7 +75,7 @@ fun DaftarSiswiScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(state.students, key = { it.userId }) { student ->
-                                StudentItem(student = student)
+                                StudentItem(student = student, onClick = { onStudentClick(student) })
                             }
                         }
                     }
@@ -84,9 +86,11 @@ fun DaftarSiswiScreen(
 }
 
 @Composable
-fun StudentItem(student: User) {
+fun StudentItem(student: User, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
