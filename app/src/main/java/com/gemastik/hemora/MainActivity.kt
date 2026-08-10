@@ -96,7 +96,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("home_remaja_putri") {
-                            Text("Welcome to Home Remaja Putri")
+                            com.gemastik.hemora.presentation.home.HomeRemajaPutriScreen()
                         }
                         composable("dashboard_uks") {
                             val viewModel: DashboardUksViewModel = viewModel(factory = ViewModelFactory.Factory)
