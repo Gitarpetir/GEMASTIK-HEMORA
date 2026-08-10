@@ -119,7 +119,27 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onNavigateBack = {
                                     navController.popBackStack()
+                                },
+                                onStudentClick = { student ->
+                                    navController.navigate("monitoring_detail/${student.userId}/${student.name}")
                                 }
+                            )
+                        }
+                        composable(
+                            route = "monitoring_detail/{studentId}/{studentName}",
+                            arguments = listOf(
+                                navArgument("studentId") { type = NavType.StringType },
+                                navArgument("studentName") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val studentId = backStackEntry.arguments?.getString("studentId") ?: ""
+                            val studentName = backStackEntry.arguments?.getString("studentName") ?: ""
+                            val viewModel: com.gemastik.hemora.presentation.monitoring.DetailMonitoringViewModel = viewModel(factory = ViewModelFactory.Factory)
+                            com.gemastik.hemora.presentation.monitoring.DetailMonitoringScreen(
+                                navController = navController,
+                                studentId = studentId,
+                                studentName = studentName,
+                                viewModel = viewModel
                             )
                         }
                         composable("school_code") {
