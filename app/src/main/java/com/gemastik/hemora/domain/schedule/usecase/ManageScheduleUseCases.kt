@@ -1,6 +1,6 @@
 package com.gemastik.hemora.domain.schedule.usecase
 
-import com.gemastik.hemora.domain.schedule.model.TtdSchedule
+import com.gemastik.hemora.domain.model.TtdSchedule
 import com.gemastik.hemora.domain.schedule.repository.ScheduleRepository
 import kotlinx.coroutines.flow.Flow
 

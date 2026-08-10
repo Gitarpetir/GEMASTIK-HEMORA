@@ -1,29 +1,32 @@
 package com.gemastik.hemora.data.schedule.dto
 
-import com.gemastik.hemora.domain.schedule.model.TtdSchedule
+import com.gemastik.hemora.domain.model.TtdSchedule
+import com.google.firebase.Timestamp
+import java.util.Date
 
 data class TtdScheduleDto(
+    val scheduleId: String = "",
     val schoolId: String = "",
-    val date: String = "",
+    val date: Timestamp? = null,
     val time: String = "",
     val createdAt: Long = 0L
 ) {
-    fun toDomain(scheduleId: String): TtdSchedule {
+    fun toDomain(docId: String = scheduleId): TtdSchedule {
         return TtdSchedule(
-            scheduleId = scheduleId,
+            scheduleId = if (docId.isNotEmpty()) docId else scheduleId,
             schoolId = schoolId,
-            date = date,
-            time = time,
-            createdAt = createdAt
+            date = date?.toDate() ?: Date(),
+            time = time
         )
     }
 }
 
 fun TtdSchedule.toDto(): TtdScheduleDto {
     return TtdScheduleDto(
+        scheduleId = scheduleId,
         schoolId = schoolId,
-        date = date,
+        date = Timestamp(date),
         time = time,
-        createdAt = createdAt
+        createdAt = System.currentTimeMillis()
     )
 }

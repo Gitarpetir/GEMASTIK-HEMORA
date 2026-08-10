@@ -15,6 +15,13 @@ import com.gemastik.hemora.domain.schedule.usecase.DeleteScheduleUseCase
 import com.gemastik.hemora.domain.schedule.usecase.GetSchedulesUseCase
 import com.gemastik.hemora.domain.schedule.usecase.ManageScheduleUseCases
 import com.gemastik.hemora.domain.schedule.usecase.UpdateScheduleUseCase
+import com.gemastik.hemora.data.schedule.repository.ScheduleRepositoryImpl
+import com.gemastik.hemora.data.consumption.repository.ConsumptionRepositoryImpl
+import com.gemastik.hemora.domain.consumption.repository.ConsumptionRepository
+import com.gemastik.hemora.domain.consumption.usecase.GetActiveReminderUseCase
+import com.gemastik.hemora.domain.consumption.usecase.ConfirmTtdConsumptionUseCase
+import com.gemastik.hemora.domain.consumption.usecase.GetConsumptionHistoryUseCase
+import com.gemastik.hemora.domain.consumption.usecase.GetUserStatisticsUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -22,11 +29,16 @@ interface AppContainer {
     val authRepository: AuthRepository
     val schoolRepository: SchoolRepository
     val scheduleRepository: ScheduleRepository
+    val consumptionRepository: ConsumptionRepository
     val loginUseCase: LoginUseCase
     val registerRemajaPutriUseCase: RegisterRemajaPutriUseCase
     val registerUksUseCase: RegisterUksUseCase
     val getSchoolInfoUseCase: GetSchoolInfoUseCase
     val manageScheduleUseCases: ManageScheduleUseCases
+    val getActiveReminderUseCase: GetActiveReminderUseCase
+    val confirmTtdConsumptionUseCase: ConfirmTtdConsumptionUseCase
+    val getConsumptionHistoryUseCase: GetConsumptionHistoryUseCase
+    val getUserStatisticsUseCase: GetUserStatisticsUseCase
 }
 
 class DefaultAppContainer : AppContainer {
@@ -43,6 +55,10 @@ class DefaultAppContainer : AppContainer {
 
     override val scheduleRepository: ScheduleRepository by lazy {
         ScheduleRepositoryImpl(firestore)
+    }
+    
+    override val consumptionRepository: ConsumptionRepository by lazy {
+        ConsumptionRepositoryImpl(firestore)
     }
 
     override val loginUseCase: LoginUseCase by lazy {
@@ -68,5 +84,21 @@ class DefaultAppContainer : AppContainer {
             updateSchedule = UpdateScheduleUseCase(scheduleRepository),
             deleteSchedule = DeleteScheduleUseCase(scheduleRepository)
         )
+    }
+
+    override val getActiveReminderUseCase: GetActiveReminderUseCase by lazy {
+        GetActiveReminderUseCase(scheduleRepository, consumptionRepository)
+    }
+
+    override val confirmTtdConsumptionUseCase: ConfirmTtdConsumptionUseCase by lazy {
+        ConfirmTtdConsumptionUseCase(consumptionRepository)
+    }
+
+    override val getConsumptionHistoryUseCase: GetConsumptionHistoryUseCase by lazy {
+        GetConsumptionHistoryUseCase(consumptionRepository)
+    }
+
+    override val getUserStatisticsUseCase: GetUserStatisticsUseCase by lazy {
+        GetUserStatisticsUseCase(consumptionRepository)
     }
 }

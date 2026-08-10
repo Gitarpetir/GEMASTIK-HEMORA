@@ -14,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemastik.hemora.domain.schedule.model.TtdSchedule
+import com.gemastik.hemora.domain.model.TtdSchedule
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun ScheduleScreen(
@@ -22,11 +24,14 @@ fun ScheduleScreen(
     onNavigateToAddEdit: (String?, String?, String?) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
     ScheduleContent(
         uiState = uiState,
         onAddClick = { onNavigateToAddEdit(null, null, null) },
-        onEditClick = { schedule -> onNavigateToAddEdit(schedule.scheduleId, schedule.date, schedule.time) },
+        onEditClick = { schedule -> 
+            onNavigateToAddEdit(schedule.scheduleId, dateFormat.format(schedule.date), schedule.time) 
+        },
         onDeleteClick = { scheduleId -> viewModel.deleteSchedule(scheduleId) }
     )
 }
@@ -101,6 +106,8 @@ fun ScheduleItemCard(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
+    
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -113,7 +120,7 @@ fun ScheduleItemCard(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Tanggal: ${schedule.date}",
+                    text = "Tanggal: ${dateFormat.format(schedule.date)}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
