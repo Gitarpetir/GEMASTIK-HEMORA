@@ -55,6 +55,13 @@ class DashboardUksViewModel(
             }
         }
     }
+
+    fun logout(onLogoutSuccess: () -> Unit) {
+        viewModelScope.launch {
+            authRepository.logout()
+            onLogoutSuccess()
+        }
+    }
 }
 
 sealed class DashboardUksUiState {

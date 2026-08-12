@@ -175,6 +175,15 @@ class AuthRepositoryImpl(
         awaitClose { listener.remove() }
     }
 
+    override fun updateProfile(userId: String, name: String): Flow<Result<Unit>> = flow {
+        try {
+            firestore.collection("users").document(userId).update("name", name).await()
+            emit(Result.success(Unit))
+        } catch (e: Exception) {
+            emit(Result.failure(e))
+        }
+    }
+
     override suspend fun logout() {
         auth.signOut()
     }

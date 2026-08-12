@@ -27,11 +27,7 @@ object ViewModelFactory {
         }
         initializer {
             val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as HemoraApplication)
-            com.gemastik.hemora.presentation.dashboard_uks.DashboardUksViewModel(
-                application.container.authRepository,
-                application.container.getSchoolInfoUseCase,
-                application.container.getSchoolSummaryUseCase
-            )
+            application.container.dashboardUksViewModelProvider()
         }
         initializer {
             val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as HemoraApplication)
@@ -71,11 +67,19 @@ object ViewModelFactory {
         }
         initializer {
             val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as HemoraApplication)
+            application.container.educationViewModelProvider()
+        }
+        initializer {
+            val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as HemoraApplication)
             com.gemastik.hemora.presentation.school.SchoolViewModel(
                 application.container.authRepository,
                 application.container.getSchoolInfoUseCase,
                 application.container.regenerateSchoolCodeUseCase
             )
+        }
+        initializer {
+            val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as HemoraApplication)
+            application.container.profileViewModelProvider()
         }
         initializer {
             val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as HemoraApplication)
