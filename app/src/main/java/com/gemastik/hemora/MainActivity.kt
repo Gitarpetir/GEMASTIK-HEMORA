@@ -110,6 +110,18 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onNavigateToStudents = {
                                     navController.navigate("daftar_siswi")
+                                },
+                                onNavigateToSchoolStatistics = {
+                                    navController.navigate("school_statistics")
+                                }
+                            )
+                        }
+                        composable("school_statistics") {
+                            val viewModel: com.gemastik.hemora.presentation.dashboard_uks.SchoolStatisticsViewModel = viewModel(factory = ViewModelFactory.Factory)
+                            com.gemastik.hemora.presentation.dashboard_uks.SchoolStatisticsScreen(
+                                viewModel = viewModel,
+                                onNavigateBack = {
+                                    navController.navigateUp()
                                 }
                             )
                         }

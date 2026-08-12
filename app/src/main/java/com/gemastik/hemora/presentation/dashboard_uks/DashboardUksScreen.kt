@@ -18,7 +18,8 @@ fun DashboardUksScreen(
     viewModel: DashboardUksViewModel,
     onNavigateToSchedule: () -> Unit,
     onNavigateToSchoolCode: () -> Unit,
-    onNavigateToStudents: () -> Unit
+    onNavigateToStudents: () -> Unit,
+    onNavigateToSchoolStatistics: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -26,7 +27,8 @@ fun DashboardUksScreen(
         uiState = uiState,
         onNavigateToSchedule = onNavigateToSchedule,
         onNavigateToSchoolCode = onNavigateToSchoolCode,
-        onNavigateToStudents = onNavigateToStudents
+        onNavigateToStudents = onNavigateToStudents,
+        onNavigateToSchoolStatistics = onNavigateToSchoolStatistics
     )
 }
 
@@ -35,7 +37,8 @@ fun DashboardUksContent(
     uiState: DashboardUksUiState,
     onNavigateToSchedule: () -> Unit,
     onNavigateToSchoolCode: () -> Unit,
-    onNavigateToStudents: () -> Unit
+    onNavigateToStudents: () -> Unit,
+    onNavigateToSchoolStatistics: () -> Unit
 ) {
     val clipboardManager = LocalClipboardManager.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -164,6 +167,19 @@ fun DashboardUksContent(
                         Spacer(modifier = Modifier.height(16.dp))
                         
                         Button(
+                            onClick = onNavigateToSchoolStatistics,
+                            modifier = Modifier.fillMaxWidth().height(50.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        ) {
+                            Text("Lihat Statistik Kepatuhan Sekolah")
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        Button(
                             onClick = onNavigateToSchoolCode,
                             modifier = Modifier.fillMaxWidth().height(50.dp),
                             colors = ButtonDefaults.buttonColors(
@@ -211,7 +227,8 @@ fun DashboardUksScreenPreview() {
             ),
             onNavigateToSchedule = {},
             onNavigateToSchoolCode = {},
-            onNavigateToStudents = {}
+            onNavigateToStudents = {},
+            onNavigateToSchoolStatistics = {}
         )
     }
 }
