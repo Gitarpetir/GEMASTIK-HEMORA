@@ -1,6 +1,11 @@
 package com.gemastik.hemora.presentation.dashboard_uks
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -8,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
@@ -17,7 +21,9 @@ fun DashboardUksScreen(
     viewModel: DashboardUksViewModel,
     onNavigateToSchedule: () -> Unit,
     onNavigateToSchoolCode: () -> Unit,
-    onNavigateToStudents: () -> Unit
+    onNavigateToStudents: () -> Unit,
+    onNavigateToSchoolStatistics: () -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -25,7 +31,38 @@ fun DashboardUksScreen(
         uiState = uiState,
         onNavigateToSchedule = onNavigateToSchedule,
         onNavigateToSchoolCode = onNavigateToSchoolCode,
-        onNavigateToStudents = onNavigateToStudents
+        onNavigateToStudents = onNavigateToStudents,
+        onNavigateToSchoolStatistics = onNavigateToSchoolStatistics,
+        onLogoutClick = { viewModel.logout(onNavigateToLogin) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DashboardHeader(
+    schoolName: String,
+    schoolCode: String,
+    onNavigateToSchoolCode: () -> Unit,
+    onLogoutClick: () -> Unit
+) {
+    TopAppBar(
+        title = { 
+            Text(schoolName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        },
+        actions = {
+            IconButton(onClick = onNavigateToSchoolCode) {
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = "Pengaturan Sekolah"
+                )
+            }
+            IconButton(onClick = onLogoutClick) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                    contentDescription = "Keluar"
+                )
+            }
+        }
     )
 }
 
@@ -34,56 +71,50 @@ fun DashboardUksContent(
     uiState: DashboardUksUiState,
     onNavigateToSchedule: () -> Unit,
     onNavigateToSchoolCode: () -> Unit,
-    onNavigateToStudents: () -> Unit
+    onNavigateToStudents: () -> Unit,
+    onNavigateToSchoolStatistics: () -> Unit,
+    onLogoutClick: () -> Unit
 ) {
-    val clipboardManager = LocalClipboardManager.current
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
+    val clipboardManager = LocalClipboardManager.current
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            if (uiState is DashboardUksUiState.Success) {
+                DashboardHeader(
+                    schoolName = uiState.schoolName,
+                    schoolCode = uiState.schoolCode,
+                    onNavigateToSchoolCode = onNavigateToSchoolCode,
+                    onLogoutClick = onLogoutClick
+                )
+            }
+        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(24.dp),
-            contentAlignment = Alignment.Center
         ) {
             when (uiState) {
                 is DashboardUksUiState.Loading -> {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
                 is DashboardUksUiState.Error -> {
                     Text(
                         text = uiState.message,
                         color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyLarge
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
                 is DashboardUksUiState.Success -> {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp)
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "Dashboard UKS",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(bottom = 32.dp)
-                        )
-
-                        Text(
-                            text = "Sekolah:",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(
-                            text = uiState.schoolName,
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 24.dp)
-                        )
-
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
@@ -125,20 +156,8 @@ fun DashboardUksContent(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         
-                        Spacer(modifier = Modifier.height(16.dp))
-                        
-                        Button(
-                            onClick = onNavigateToSchoolCode,
-                            modifier = Modifier.fillMaxWidth().height(50.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondary
-                            )
-                        ) {
-                            Text("Kelola School Code")
-                        }
+                        Spacer(modifier = Modifier.height(24.dp))
 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        
                         Button(
                             onClick = onNavigateToSchedule,
                             modifier = Modifier.fillMaxWidth().height(50.dp)
@@ -147,35 +166,27 @@ fun DashboardUksContent(
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
-                        
+
                         Button(
                             onClick = onNavigateToStudents,
                             modifier = Modifier.fillMaxWidth().height(50.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary
-                            )
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                         ) {
                             Text("Lihat Daftar Siswi")
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Button(
+                            onClick = onNavigateToSchoolStatistics,
+                            modifier = Modifier.fillMaxWidth().height(50.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                        ) {
+                            Text("Statistik Kepatuhan Sekolah")
                         }
                     }
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DashboardUksScreenPreview() {
-    MaterialTheme {
-        DashboardUksContent(
-            uiState = DashboardUksUiState.Success(
-                schoolName = "SMA Negeri 1 Jakarta",
-                schoolCode = "XYZ123"
-            ),
-            onNavigateToSchedule = {},
-            onNavigateToSchoolCode = {},
-            onNavigateToStudents = {}
-        )
     }
 }

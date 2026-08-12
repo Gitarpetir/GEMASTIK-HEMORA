@@ -96,7 +96,30 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("home_remaja_putri") {
-                            com.gemastik.hemora.presentation.home.HomeRemajaPutriScreen()
+                            com.gemastik.hemora.presentation.home.HomeRemajaPutriScreen(
+                                onNavigateToLogin = {
+                                    navController.navigate("login") {
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                },
+                                onNavigateToEducationDetail = { educationId ->
+                                    navController.navigate("education_detail/$educationId")
+                                }
+                            )
+                        }
+                        composable(
+                            route = "education_detail/{educationId}",
+                            arguments = listOf(navArgument("educationId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val educationId = backStackEntry.arguments?.getString("educationId") ?: ""
+                            val viewModel: com.gemastik.hemora.presentation.education.EducationViewModel = viewModel(factory = ViewModelFactory.Factory)
+                            com.gemastik.hemora.presentation.education.EducationDetailScreen(
+                                educationId = educationId,
+                                viewModel = viewModel,
+                                onNavigateBack = {
+                                    navController.popBackStack()
+                                }
+                            )
                         }
                         composable("dashboard_uks") {
                             val viewModel: DashboardUksViewModel = viewModel(factory = ViewModelFactory.Factory)
@@ -110,6 +133,14 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onNavigateToStudents = {
                                     navController.navigate("daftar_siswi")
+                                },
+                                onNavigateToSchoolStatistics = {
+                                    navController.navigate("school_statistics")
+                                },
+                                onNavigateToLogin = {
+                                    navController.navigate("login") {
+                                        popUpTo(0) { inclusive = true }
+                                    }
                                 }
                             )
                         }

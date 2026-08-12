@@ -40,6 +40,13 @@ interface AppContainer {
     val getConsumptionHistoryUseCase: GetConsumptionHistoryUseCase
     val getUserStatisticsUseCase: GetUserStatisticsUseCase
     val regenerateSchoolCodeUseCase: RegenerateSchoolCodeUseCase
+    val getUserProfileUseCase: com.gemastik.hemora.domain.auth.usecase.GetUserProfileUseCase
+    val updateUserProfileUseCase: com.gemastik.hemora.domain.auth.usecase.UpdateUserProfileUseCase
+    val getEducationsUseCase: com.gemastik.hemora.domain.education.usecase.GetEducationsUseCase
+    val getEducationDetailUseCase: com.gemastik.hemora.domain.education.usecase.GetEducationDetailUseCase
+    val dashboardUksViewModelProvider: () -> com.gemastik.hemora.presentation.dashboard_uks.DashboardUksViewModel
+    val profileViewModelProvider: () -> com.gemastik.hemora.presentation.profile.ProfileViewModel
+    val educationViewModelProvider: () -> com.gemastik.hemora.presentation.education.EducationViewModel
     val monitoringRepository: com.gemastik.hemora.domain.monitoring.repository.MonitoringRepository
     val getStudentsUseCase: com.gemastik.hemora.domain.monitoring.usecase.GetStudentsUseCase
     val getStudentMonitoringUseCase: com.gemastik.hemora.domain.monitoring.usecase.GetStudentMonitoringUseCase
@@ -120,5 +127,40 @@ class DefaultAppContainer : AppContainer {
 
     override val getStudentMonitoringUseCase: com.gemastik.hemora.domain.monitoring.usecase.GetStudentMonitoringUseCase by lazy {
         com.gemastik.hemora.domain.monitoring.usecase.GetStudentMonitoringUseCase(scheduleRepository, consumptionRepository)
+    }
+
+    override val dashboardUksViewModelProvider: () -> com.gemastik.hemora.presentation.dashboard_uks.DashboardUksViewModel = {
+        com.gemastik.hemora.presentation.dashboard_uks.DashboardUksViewModel(
+            authRepository = authRepository,
+            getSchoolInfoUseCase = getSchoolInfoUseCase
+        )
+    }
+
+    override val getUserProfileUseCase: com.gemastik.hemora.domain.auth.usecase.GetUserProfileUseCase by lazy {
+        com.gemastik.hemora.domain.auth.usecase.GetUserProfileUseCase(authRepository)
+    }
+
+    override val updateUserProfileUseCase: com.gemastik.hemora.domain.auth.usecase.UpdateUserProfileUseCase by lazy {
+        com.gemastik.hemora.domain.auth.usecase.UpdateUserProfileUseCase(authRepository)
+    }
+
+    override val profileViewModelProvider: () -> com.gemastik.hemora.presentation.profile.ProfileViewModel = {
+        com.gemastik.hemora.presentation.profile.ProfileViewModel(getUserProfileUseCase, updateUserProfileUseCase, authRepository)
+    }
+
+    private val educationRepository: com.gemastik.hemora.domain.education.repository.EducationRepository by lazy {
+        com.gemastik.hemora.data.education.repository.EducationRepositoryImpl(firestore)
+    }
+
+    override val getEducationsUseCase: com.gemastik.hemora.domain.education.usecase.GetEducationsUseCase by lazy {
+        com.gemastik.hemora.domain.education.usecase.GetEducationsUseCase(educationRepository)
+    }
+
+    override val getEducationDetailUseCase: com.gemastik.hemora.domain.education.usecase.GetEducationDetailUseCase by lazy {
+        com.gemastik.hemora.domain.education.usecase.GetEducationDetailUseCase(educationRepository)
+    }
+
+    override val educationViewModelProvider: () -> com.gemastik.hemora.presentation.education.EducationViewModel = {
+        com.gemastik.hemora.presentation.education.EducationViewModel(getEducationsUseCase, getEducationDetailUseCase)
     }
 }
