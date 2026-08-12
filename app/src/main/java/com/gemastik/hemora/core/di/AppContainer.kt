@@ -50,6 +50,8 @@ interface AppContainer {
     val monitoringRepository: com.gemastik.hemora.domain.monitoring.repository.MonitoringRepository
     val getStudentsUseCase: com.gemastik.hemora.domain.monitoring.usecase.GetStudentsUseCase
     val getStudentMonitoringUseCase: com.gemastik.hemora.domain.monitoring.usecase.GetStudentMonitoringUseCase
+    val getSchoolSummaryUseCase: com.gemastik.hemora.domain.dashboard.usecase.GetSchoolSummaryUseCase
+    val getSchoolStatisticsUseCase: com.gemastik.hemora.domain.dashboard.usecase.GetSchoolStatisticsUseCase
 }
 
 class DefaultAppContainer : AppContainer {
@@ -110,7 +112,7 @@ class DefaultAppContainer : AppContainer {
     }
 
     override val getUserStatisticsUseCase: GetUserStatisticsUseCase by lazy {
-        GetUserStatisticsUseCase(consumptionRepository)
+        GetUserStatisticsUseCase(scheduleRepository, consumptionRepository)
     }
 
     override val regenerateSchoolCodeUseCase: RegenerateSchoolCodeUseCase by lazy {
@@ -129,10 +131,19 @@ class DefaultAppContainer : AppContainer {
         com.gemastik.hemora.domain.monitoring.usecase.GetStudentMonitoringUseCase(scheduleRepository, consumptionRepository)
     }
 
+    override val getSchoolSummaryUseCase: com.gemastik.hemora.domain.dashboard.usecase.GetSchoolSummaryUseCase by lazy {
+        com.gemastik.hemora.domain.dashboard.usecase.GetSchoolSummaryUseCase(monitoringRepository, scheduleRepository, consumptionRepository)
+    }
+
+    override val getSchoolStatisticsUseCase: com.gemastik.hemora.domain.dashboard.usecase.GetSchoolStatisticsUseCase by lazy {
+        com.gemastik.hemora.domain.dashboard.usecase.GetSchoolStatisticsUseCase(monitoringRepository, scheduleRepository, consumptionRepository)
+    }
+
     override val dashboardUksViewModelProvider: () -> com.gemastik.hemora.presentation.dashboard_uks.DashboardUksViewModel = {
         com.gemastik.hemora.presentation.dashboard_uks.DashboardUksViewModel(
             authRepository = authRepository,
-            getSchoolInfoUseCase = getSchoolInfoUseCase
+            getSchoolInfoUseCase = getSchoolInfoUseCase,
+            getSchoolSummaryUseCase = getSchoolSummaryUseCase
         )
     }
 

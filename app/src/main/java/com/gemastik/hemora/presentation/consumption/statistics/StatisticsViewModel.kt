@@ -39,7 +39,7 @@ class StatisticsViewModel(
             authRepository.getCurrentUser().flatMapLatest { userResult ->
                 val user = userResult.getOrNull()
                 if (user != null) {
-                    getUserStatisticsUseCase(user.userId)
+                    getUserStatisticsUseCase(user.userId, user.schoolId)
                 } else {
                     kotlinx.coroutines.flow.flowOf(Result.failure(Exception("Sesi tidak valid")))
                 }

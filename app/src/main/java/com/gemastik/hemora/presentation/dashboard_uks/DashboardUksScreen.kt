@@ -10,9 +10,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
@@ -46,7 +48,7 @@ fun DashboardHeader(
     onLogoutClick: () -> Unit
 ) {
     TopAppBar(
-        title = { 
+        title = {
             Text(schoolName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         },
         actions = {
@@ -115,6 +117,41 @@ fun DashboardUksContent(
                             .verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        uiState.summary?.let { summary ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                DashboardMetricCard(
+                                    modifier = Modifier.weight(1f),
+                                    title = "Total Siswi",
+                                    value = summary.totalStudents.toString()
+                                )
+                                DashboardMetricCard(
+                                    modifier = Modifier.weight(1f),
+                                    title = "Jadwal TTD",
+                                    value = summary.totalSchedules.toString()
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                DashboardMetricCard(
+                                    modifier = Modifier.weight(1f),
+                                    title = "Sdh Konsumsi",
+                                    value = summary.totalConfirmed.toString(),
+                                    valueColor = Color(0xFF4CAF50)
+                                )
+                                DashboardMetricCard(
+                                    modifier = Modifier.weight(1f),
+                                    title = "Blm Konsumsi",
+                                    value = summary.totalUnconfirmed.toString(),
+                                    valueColor = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
@@ -155,8 +192,33 @@ fun DashboardUksContent(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        
-                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Button(
+                            onClick = onNavigateToSchoolStatistics,
+                            modifier = Modifier.fillMaxWidth().height(50.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        ) {
+                            Text("Lihat Statistik Kepatuhan Sekolah")
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Button(
+                            onClick = onNavigateToSchoolCode,
+                            modifier = Modifier.fillMaxWidth().height(50.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary
+                            )
+                        ) {
+                            Text("Kelola School Code")
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         Button(
                             onClick = onNavigateToSchedule,
@@ -174,19 +236,61 @@ fun DashboardUksContent(
                         ) {
                             Text("Lihat Daftar Siswi")
                         }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Button(
-                            onClick = onNavigateToSchoolStatistics,
-                            modifier = Modifier.fillMaxWidth().height(50.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
-                        ) {
-                            Text("Statistik Kepatuhan Sekolah")
-                        }
                     }
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DashboardUksScreenPreview() {
+    MaterialTheme {
+        DashboardUksContent(
+            uiState = DashboardUksUiState.Success(
+                schoolName = "SMA Negeri 1 Jakarta",
+                schoolCode = "XYZ123"
+            ),
+            onNavigateToSchedule = {},
+            onNavigateToSchoolCode = {},
+            onNavigateToStudents = {},
+            onNavigateToSchoolStatistics = {},
+            onLogoutClick = {}
+        )
+    }
+}
+
+@Composable
+fun DashboardMetricCard(
+    modifier: Modifier = Modifier,
+    title: String,
+    value: String,
+    valueColor: Color = MaterialTheme.colorScheme.onSurface
+) {
+    Card(
+        modifier = modifier.height(100.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = valueColor
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

@@ -144,6 +144,15 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
+                        composable("school_statistics") {
+                            val viewModel: com.gemastik.hemora.presentation.dashboard_uks.SchoolStatisticsViewModel = viewModel(factory = ViewModelFactory.Factory)
+                            com.gemastik.hemora.presentation.dashboard_uks.SchoolStatisticsScreen(
+                                viewModel = viewModel,
+                                onNavigateBack = {
+                                    navController.navigateUp()
+                                }
+                            )
+                        }
                         composable("daftar_siswi") {
                             val viewModel: com.gemastik.hemora.presentation.monitoring.DaftarSiswiViewModel = viewModel(factory = ViewModelFactory.Factory)
                             com.gemastik.hemora.presentation.monitoring.DaftarSiswiScreen(
